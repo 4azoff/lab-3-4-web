@@ -1,0 +1,50 @@
+
+
+
+
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Список задач{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('blog.create') }}">Создать</a>
+  {% endif %}
+{% endblock %}
+<form id="main-form">
+{% block content %}
+	{% if g.user %}
+		{% for post in posts %}
+			<article class="post" id = "{{post['id']}}">
+				<header>
+				
+				{% if g.user['id'] == post['author_id'] %}
+					<div>
+					  <h1>{{ post['title'] }}</h1>
+					  <div class="about">Создана {{ post['created'].strftime('%Y-%m-%d') }}</div>
+					</div>
+					
+					    <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">Редактировать</a>
+					    <button onclick="delTask({{post['id']}});" >Удалить</button>
+					{% if post['done'] %}
+						<p class = "box"><input  type="checkbox" onclick="checkSys({{post['id']}});"  checked  ></p>
+					{% else %}
+						<p class = "box"><input  type="checkbox" onclick="checkSys({{post['id']}});" ></p>
+                    {% endif %}
+						<button onclick="commentLoad({{post['id']}});" >Подгрузить комментарий</button>
+				{% endif %}
+				</header>
+			  {% if g.user['id'] == post['author_id'] %}
+				<p class="body">{{ post['body'] }}</p>
+				<hr>
+			  {% endif %}
+			</article>
+			{% if not loop.last %}
+			
+			{% endif %}
+		  {% endfor %}
+	 
+	{% else %}
+	  <h1>Войдите, чтобы увидеть ваш список задач</h1>
+	{% endif %}
+</form>  
+{% endblock %}
